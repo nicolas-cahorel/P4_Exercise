@@ -1,4 +1,4 @@
-package com.openclassrooms.notes.widget
+package com.openclassrooms.notes.view.recyclerview
 
 import android.graphics.Rect
 import android.view.View
