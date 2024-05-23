@@ -2,14 +2,13 @@ package com.openclassrooms.notes.view.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.openclassrooms.notes.R
 import com.openclassrooms.notes.databinding.ActivityMainBinding
-import com.openclassrooms.notes.model.repository.NotesRepository
 import com.openclassrooms.notes.view.recyclerview.NoteItemDecoration
 import com.openclassrooms.notes.view.recyclerview.NoteAdapter
-import kotlinx.coroutines.launch
+import com.openclassrooms.notes.viewmodel.NoteViewModel
 
 /**
  * The main activity for the app.
@@ -21,9 +20,10 @@ class MainActivity : AppCompatActivity() {
      */
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var noteViewModel: NoteViewModel
+
     private val noteAdapter = NoteAdapter(emptyList())
 
-    private val notesRepository = NotesRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,19 +31,19 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
+
         initRecyclerView()
         initFABButton()
-        collectNotes()
+        observeNotes()
     }
 
     /**
-     * Collects notes from the repository and updates the adapter.
+     * Observes the list of notes in the ViewModel and updates the RecyclerView adapter accordingly.
      */
-    private fun collectNotes() {
-        lifecycleScope.launch {
-            notesRepository.notes.collect {
-                noteAdapter.updateNotes(it)
-            }
+    private fun observeNotes() {
+        noteViewModel.notes.observe(this) {
+            notes -> noteAdapter.updateNotes(notes)
         }
     }
 
