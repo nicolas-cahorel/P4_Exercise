@@ -1,6 +1,6 @@
-package com.openclassrooms.notes.model.service
+package com.openclassrooms.notes.data.service
 
-import com.openclassrooms.notes.model.data.Note
+import com.openclassrooms.notes.data.model.Note
 
 /**
  * Implementation of the [NotesApiService] interface that stores note in local

@@ -1,8 +1,8 @@
-package com.openclassrooms.notes.view.recyclerview
+package com.openclassrooms.notes.ui.recyclerview
 
 import androidx.recyclerview.widget.RecyclerView
 import com.openclassrooms.notes.databinding.NoteBinding
-import com.openclassrooms.notes.model.data.Note
+import com.openclassrooms.notes.data.model.Note
 
 /**
  * A view holder for displaying a note in a RecyclerView.

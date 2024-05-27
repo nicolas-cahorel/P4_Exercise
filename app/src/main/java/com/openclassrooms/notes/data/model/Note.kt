@@ -1,4 +1,4 @@
-package com.openclassrooms.notes.model.data
+package com.openclassrooms.notes.data.model
 
 /**
  * A data class representing a note with a title and a body.

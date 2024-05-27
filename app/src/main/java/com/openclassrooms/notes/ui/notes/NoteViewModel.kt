@@ -1,12 +1,12 @@
-package com.openclassrooms.notes.viewmodel
+package com.openclassrooms.notes.ui.notes
 
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.openclassrooms.notes.model.data.Note
-import com.openclassrooms.notes.model.repository.NoteRepository
+import com.openclassrooms.notes.data.model.Note
+import com.openclassrooms.notes.data.repository.NoteRepository
 import kotlinx.coroutines.launch
 
 /**
