@@ -52,6 +52,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.ai.client.generativeai:generativeai:0.6.0")
     val koinVersion = "3.5.6"
 
     implementation("androidx.core:core-ktx:1.13.1")

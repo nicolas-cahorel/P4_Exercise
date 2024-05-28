@@ -31,5 +31,14 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, NoteFragment())
                 .commitNow()
         }
+
+        // Exemple d'utilisation de noteViewModel
+        noteViewModel.notes.observe(this) { notes ->
+
+            // Faites quelque chose avec les notes, par exemple les afficher dans un log
+            notes.forEach { note ->
+                println("Note: ${note.title} - ${note.body}")
+            }
+        }
     }
 }
