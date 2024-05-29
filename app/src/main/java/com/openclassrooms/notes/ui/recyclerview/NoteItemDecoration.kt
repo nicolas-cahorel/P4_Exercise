@@ -15,6 +15,13 @@ class NoteItemDecoration(
     private val spanCount: Int
 ) : ItemDecoration() {
 
+    /**
+     * Adds spacing around the items in the RecyclerView.
+     * @param outRect The Rect to receive the output bounds.
+     * @param view The child view to decorate.
+     * @param parent The RecyclerView this ItemDecoration is decorating.
+     * @param state The current state of RecyclerView.
+     */
     override fun getItemOffsets(
         outRect: Rect,
         view: View,

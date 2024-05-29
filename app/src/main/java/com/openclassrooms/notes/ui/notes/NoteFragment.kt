@@ -1,28 +1,31 @@
 package com.openclassrooms.notes.ui.notes
 
 
-
-import com.openclassrooms.notes.ui.recyclerview.NoteAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.openclassrooms.notes.R
-import com.openclassrooms.notes.data.repository.NoteRepository
 import com.openclassrooms.notes.databinding.FragmentNoteBinding
+import com.openclassrooms.notes.ui.recyclerview.NoteAdapter
 import com.openclassrooms.notes.ui.recyclerview.NoteItemDecoration
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * A fragment for displaying notes.
+ *
+ * This fragment is responsible for displaying a list of notes using a RecyclerView. It observes
+ * the NoteViewModel to get the latest notes and updates the RecyclerView accordingly. It also
+ * initializes a Floating Action Button (FAB) for adding new notes.
  */
 class NoteFragment : Fragment() {
 
-    // Déclaration du repository et de l'adaptateur
-    private val noteRepository = NoteRepository()
-    private lateinit var noteAdapter : NoteAdapter
+    private lateinit var noteAdapter: NoteAdapter
 
     /**
      * The binding for the fragment layout.
@@ -30,9 +33,16 @@ class NoteFragment : Fragment() {
     private var _binding: FragmentNoteBinding? = null
     private val binding get() = _binding!!
 
-    private val noteViewModel: NoteViewModel by activityViewModels()
+    private val noteViewModel: NoteViewModel by viewModel()
 
-
+    /**
+     * Inflates the fragment layout and returns the root view.
+     *
+     * @param inflater The LayoutInflater used to inflate the layout.
+     * @param container The parent view that this fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return The root view of the fragment's layout.
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,17 +51,26 @@ class NoteFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Called immediately after `onCreateView()` has returned, but before any saved state has been restored into the view.
+     *
+     * @param view The View returned by `onCreateView()`.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialisation de l'adaptateur
-        noteAdapter = NoteAdapter(noteRepository.notes, viewLifecycleOwner)
+        // Initializes the adapter
+        noteAdapter = NoteAdapter()
 
         initRecyclerView()
         initFABButton()
         observeNotes()
     }
 
+    /**
+     * Called when the view previously created by `onCreateView()` has been detached from the fragment.
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -61,13 +80,16 @@ class NoteFragment : Fragment() {
      * Observes the list of notes in the ViewModel and updates the RecyclerView adapter accordingly.
      */
     private fun observeNotes() {
-        noteViewModel.notes.observe(viewLifecycleOwner) { notes ->
-            noteAdapter.updateNotes(notes)
+        viewLifecycleOwner.lifecycleScope.launch {
+            noteViewModel.notes.collectLatest { noteAdapter.updateNotes(it) }
         }
+        noteViewModel.collectNotes()
     }
 
     /**
-     * Initializes the FAB button.
+     * Initializes the Floating Action Button (FAB).
+     *
+     * The FAB shows a dialog when clicked, indicating that adding new notes is not yet available.
      */
     private fun initFABButton() {
         binding.btnAdd.setOnClickListener {
@@ -81,6 +103,8 @@ class NoteFragment : Fragment() {
 
     /**
      * Initializes the RecyclerView.
+     *
+     * Sets up the RecyclerView with an item decoration and assigns the NoteAdapter to it.
      */
     private fun initRecyclerView() {
         with(binding.recycler) {
@@ -90,7 +114,7 @@ class NoteFragment : Fragment() {
                     resources.getInteger(R.integer.span_count)
                 )
             )
-
+            // Set the initialized adapter to the RecyclerView to display notes
             adapter = noteAdapter
         }
     }
