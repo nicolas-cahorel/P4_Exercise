@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "OCRNotes"
+rootProject.name = "P4E_OCRNotes"
 include(":app")
